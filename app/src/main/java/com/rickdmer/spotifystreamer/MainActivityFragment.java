@@ -1,14 +1,15 @@
 package com.rickdmer.spotifystreamer;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -47,19 +48,26 @@ public class MainActivityFragment extends Fragment {
         ListView artistListView = (ListView) rootView.findViewById(R.id.listview_artist);
         artistListView.setAdapter(mArtistsAdapter);
 
-        // Input handling
+        // Search handling
         EditText artistSearch = (EditText) rootView.findViewById(R.id.edittext_artist_search);
         artistSearch.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    // TODO: Perform search
-
                     SearchForArtistTask task = new SearchForArtistTask();
                     task.execute(v.getText().toString());
                     return true;
                 }
                 return false;
+            }
+        });
+
+        // Item click handling
+        artistListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), TopTracksActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -84,7 +92,6 @@ public class MainActivityFragment extends Fragment {
 
             for (int i = 0; i < artists.size(); i++) {
                 Artist artist = artists.get(i);
-                Log.i(LOG_TAG, i + " " + artist.name);
                 resultsArtists[i] = artist;
             }
 
@@ -104,8 +111,6 @@ public class MainActivityFragment extends Fragment {
 
             return resultsArtists;
         }
-
-        //TODO: Stop this from running on execute -- Comment out after testing
 
         @Override
         protected void onPostExecute(Artist[] result) {
