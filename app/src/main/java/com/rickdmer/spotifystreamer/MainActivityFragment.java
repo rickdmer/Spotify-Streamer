@@ -4,23 +4,22 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
-import kaaes.spotify.webapi.android.models.Track;
-import kaaes.spotify.webapi.android.models.Tracks;
 
 
 /**
@@ -29,7 +28,7 @@ import kaaes.spotify.webapi.android.models.Tracks;
 public class MainActivityFragment extends Fragment {
 
     private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
-    private ArrayAdapter<String> mArtistsAdapter;
+    private ArtistListViewAdapter mArtistsAdapter;
 
     public MainActivityFragment() {
     }
@@ -38,44 +37,59 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mArtistsAdapter = new ArrayAdapter<String>(
+        mArtistsAdapter = new ArtistListViewAdapter (
                 getActivity(),
                 R.layout.list_item_artist,
-                R.id.list_item_artist_textview,
-                new ArrayList<String>());
+                new ArrayList<Artist>());
 
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
         ListView artistListView = (ListView) rootView.findViewById(R.id.listview_artist);
         artistListView.setAdapter(mArtistsAdapter);
 
+        // Input handling
+        EditText artistSearch = (EditText) rootView.findViewById(R.id.edittext_artist_search);
+        artistSearch.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    // TODO: Perform search
+
+                    SearchForArtistTask task = new SearchForArtistTask();
+                    task.execute(v.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
+
         return rootView;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        SearchForArtistTask task = new SearchForArtistTask();
-        task.execute();
-    }
-
     //
-    public class SearchForArtistTask extends AsyncTask<String, Void, String[]>
+    public class SearchForArtistTask extends AsyncTask<String, Void, Artist[]>
     {
         @Override
-        protected String[] doInBackground(String... params) {
+        protected Artist[] doInBackground(String... params) {
             SpotifyApi api = new SpotifyApi();
             SpotifyService spotify = api.getService();
-
-            Map<String, Object> options = new HashMap<>();
-            options.put("country", "US");
 
             //TODO: Use error handling
 
             // Get first artist result
-            ArtistsPager artistsResults = spotify.searchArtists("Paul");
+            ArtistsPager artistsResults = spotify.searchArtists(params[0]);
             List<Artist> artists = artistsResults.artists.items;
-            Artist artist = artists.get(0);
+
+            Artist[] resultsArtists = new Artist[artists.size()];
+
+            for (int i = 0; i < artists.size(); i++) {
+                Artist artist = artists.get(i);
+                Log.i(LOG_TAG, i + " " + artist.name);
+                resultsArtists[i] = artist;
+            }
+
+            /*Map<String, Object> options = new HashMap<>();
+            options.put("country", "US");
 
             Tracks tracksResults = spotify.getArtistTopTrack(artist.id, options);
             List<Track> tracks = tracksResults.tracks;
@@ -86,19 +100,20 @@ public class MainActivityFragment extends Fragment {
                 Track track = tracks.get(i);
                 Log.i(LOG_TAG, i + " " + track.name);
                 resultsArtists[i] = track.name;
-            }
+            }*/
 
             return resultsArtists;
         }
 
+        //TODO: Stop this from running on execute -- Comment out after testing
+
         @Override
-        protected void onPostExecute(String[] result) {
+        protected void onPostExecute(Artist[] result) {
             if (result != null) {
                 mArtistsAdapter.clear();
-                for(String artistStr : result) {
-                    mArtistsAdapter.add(artistStr);
+                for(Artist artistData : result) {
+                    mArtistsAdapter.add(artistData);
                 }
-                // New data is back from the server.  Hooray!
             }
         }
     }
