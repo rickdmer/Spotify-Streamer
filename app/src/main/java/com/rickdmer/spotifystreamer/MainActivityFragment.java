@@ -66,7 +66,10 @@ public class MainActivityFragment extends Fragment {
         artistListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), TopTracksActivity.class);
+                Artist clickedArtist = mArtistsAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), TopTracksActivity.class)
+                        .putExtra("artistId", clickedArtist.id)
+                        .putExtra("artistName", clickedArtist.name);
                 startActivity(intent);
             }
         });
@@ -94,20 +97,6 @@ public class MainActivityFragment extends Fragment {
                 Artist artist = artists.get(i);
                 resultsArtists[i] = artist;
             }
-
-            /*Map<String, Object> options = new HashMap<>();
-            options.put("country", "US");
-
-            Tracks tracksResults = spotify.getArtistTopTrack(artist.id, options);
-            List<Track> tracks = tracksResults.tracks;
-
-            String[] resultsArtists = new String[tracks.size()];
-
-            for (int i = 0; i < tracks.size(); i++) {
-                Track track = tracks.get(i);
-                Log.i(LOG_TAG, i + " " + track.name);
-                resultsArtists[i] = track.name;
-            }*/
 
             return resultsArtists;
         }

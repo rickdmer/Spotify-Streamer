@@ -41,7 +41,7 @@ public class TrackListViewAdapter extends ArrayAdapter<Track> {
 
         // reuse view if already exists
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.list_item_artist, null);
+            convertView = mInflater.inflate(R.layout.list_item_track, null);
             holder = new ViewHolder();
             holder.trackName = (TextView) convertView.findViewById(R.id.list_item_track_title);
             holder.albumTitle = (TextView) convertView.findViewById(R.id.list_item_track_album);
@@ -52,6 +52,7 @@ public class TrackListViewAdapter extends ArrayAdapter<Track> {
         }
 
         holder.trackName.setText(track.name);
+        holder.albumTitle.setText(track.album.name);
         if (track.album.images.size() > 1) {
             Picasso.with(context).load(track.album.images.get(1).url).into(holder.imageView);
         } else if (track.album.images.size() > 0) {
