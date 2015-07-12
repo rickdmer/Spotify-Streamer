@@ -13,17 +13,15 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import kaaes.spotify.webapi.android.models.Track;
-
 /**
  * Created by richard.carhart on 7/6/2015.
  */
 // Using http://theopentutorials.com/tutorials/android/listview/android-custom-listview-with-image-and-text-using-arrayadapter/
-public class TrackListViewAdapter extends ArrayAdapter<Track> {
+public class TrackListViewAdapter extends ArrayAdapter<CustomTrack> {
 
     Context context;
 
-    public TrackListViewAdapter(Context context, int resourceId, List<Track> tracks) {
+    public TrackListViewAdapter(Context context, int resourceId, List<CustomTrack> tracks) {
         super(context, resourceId, tracks);
         this.context = context;
     }
@@ -36,7 +34,7 @@ public class TrackListViewAdapter extends ArrayAdapter<Track> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
-        Track track = getItem(position);
+        CustomTrack track = getItem(position);
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
         // reuse view if already exists
@@ -51,13 +49,9 @@ public class TrackListViewAdapter extends ArrayAdapter<Track> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.trackName.setText(track.name);
-        holder.albumTitle.setText(track.album.name);
-        if (track.album.images.size() > 1) {
-            Picasso.with(context).load(track.album.images.get(1).url).into(holder.imageView);
-        } else if (track.album.images.size() > 0) {
-            Picasso.with(context).load(track.album.images.get(0).url).into(holder.imageView);
-        }
+        holder.trackName.setText(track.trackName);
+        holder.albumTitle.setText(track.albumName);
+        Picasso.with(context).load(track.albumImageUrl).into(holder.imageView);
 
         return convertView;
     }

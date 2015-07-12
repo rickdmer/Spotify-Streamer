@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,25 @@ public class MainActivityFragment extends Fragment {
 
     private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
     private ArtistListViewAdapter mArtistsAdapter;
+    private ArrayList<CustomArtist> artistList;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null && savedInstanceState.containsKey("artists")) {
+            artistList = savedInstanceState.getParcelableArrayList("artists");
+        } else {
+            artistList = new ArrayList<CustomArtist>();
+        }
+    }
 
     public MainActivityFragment() {
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("artists", artistList);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -41,7 +59,7 @@ public class MainActivityFragment extends Fragment {
         mArtistsAdapter = new ArtistListViewAdapter (
                 getActivity(),
                 R.layout.list_item_artist,
-                new ArrayList<Artist>());
+                artistList);
 
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
@@ -53,7 +71,7 @@ public class MainActivityFragment extends Fragment {
         artistSearch.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_SEARCH)) {
                     SearchForArtistTask task = new SearchForArtistTask();
                     task.execute(v.getText().toString());
                     return true;
@@ -66,10 +84,10 @@ public class MainActivityFragment extends Fragment {
         artistListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Artist clickedArtist = mArtistsAdapter.getItem(position);
+                CustomArtist clickedArtist = mArtistsAdapter.getItem(position);
                 Intent intent = new Intent(getActivity(), TopTracksActivity.class)
-                        .putExtra("artistId", clickedArtist.id)
-                        .putExtra("artistName", clickedArtist.name);
+                        .putExtra("artistId", clickedArtist.artistId)
+                        .putExtra("artistName", clickedArtist.artistName);
                 startActivity(intent);
             }
         });
@@ -78,35 +96,41 @@ public class MainActivityFragment extends Fragment {
     }
 
     //
-    public class SearchForArtistTask extends AsyncTask<String, Void, Artist[]>
+    public class SearchForArtistTask extends AsyncTask<String, Void, CustomArtist[]>
     {
         @Override
-        protected Artist[] doInBackground(String... params) {
+        protected CustomArtist[] doInBackground(String... params) {
             SpotifyApi api = new SpotifyApi();
             SpotifyService spotify = api.getService();
 
-            //TODO: Use error handling
-
-            // Get first artist result
             ArtistsPager artistsResults = spotify.searchArtists(params[0]);
+
             List<Artist> artists = artistsResults.artists.items;
 
-            Artist[] resultsArtists = new Artist[artists.size()];
+            CustomArtist[] resultsArtists = new CustomArtist[artists.size()];
 
             for (int i = 0; i < artists.size(); i++) {
                 Artist artist = artists.get(i);
-                resultsArtists[i] = artist;
+                String imageUrl = null;
+                if (artist.images.size() > 0) {
+                    imageUrl = artist.images.get(0).url;
+                }
+                resultsArtists[i] = new CustomArtist(artist.name, artist.id, imageUrl);
             }
 
             return resultsArtists;
         }
 
         @Override
-        protected void onPostExecute(Artist[] result) {
+        protected void onPostExecute(CustomArtist[] result) {
             if (result != null) {
                 mArtistsAdapter.clear();
-                for(Artist artistData : result) {
-                    mArtistsAdapter.add(artistData);
+                if (result.length > 0) {
+                    for (CustomArtist artistData : result) {
+                        mArtistsAdapter.add(artistData);
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Could not find results for artist, please refine search.", Toast.LENGTH_SHORT).show();
                 }
             }
         }

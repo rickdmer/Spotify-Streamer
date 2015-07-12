@@ -26,11 +26,29 @@ import kaaes.spotify.webapi.android.models.Tracks;
 public class TopTracksFragment extends Fragment {
 
     private static final String LOG_TAG = TopTracksFragment.class.getSimpleName();
+    private TrackListViewAdapter mTracksAdapter;
+    private ArrayList<CustomTrack> trackList;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null && savedInstanceState.containsKey("tracks")) {
+            trackList = savedInstanceState.getParcelableArrayList("tracks");
+        } else {
+            trackList = new ArrayList<CustomTrack>();
+        }
+    }
 
     public TopTracksFragment() {
     }
 
-    private TrackListViewAdapter mTracksAdapter;
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("tracks", trackList);
+        super.onSaveInstanceState(outState);
+    }
+
+
     private String mArtistIdStr;
 
     @Override
@@ -40,7 +58,7 @@ public class TopTracksFragment extends Fragment {
         mTracksAdapter = new TrackListViewAdapter (
                 getActivity(),
                 R.layout.list_item_track,
-                new ArrayList<Track>());
+                trackList);
 
         View rootView = inflater.inflate(R.layout.fragment_top_tracks, container, false);
 
@@ -57,9 +75,9 @@ public class TopTracksFragment extends Fragment {
         return rootView;
     }
     //
-    public class GetTopTracksTask extends AsyncTask<String, Void, Track[]> {
+    public class GetTopTracksTask extends AsyncTask<String, Void, CustomTrack[]> {
         @Override
-        protected Track[] doInBackground(String... params) {
+        protected CustomTrack[] doInBackground(String... params) {
             SpotifyApi api = new SpotifyApi();
             SpotifyService spotify = api.getService();
 
@@ -73,21 +91,25 @@ public class TopTracksFragment extends Fragment {
             Tracks tracksResults = spotify.getArtistTopTrack(artistId, options);
             List<Track> tracks = tracksResults.tracks;
 
-            Track[] resultsTracks = new Track[tracks.size()];
+            CustomTrack[] resultsTracks = new CustomTrack[tracks.size()];
 
             for (int i = 0; i < tracks.size(); i++) {
                 Track track = tracks.get(i);
-                resultsTracks[i] = track;
+                String albumImgUrl = null;
+                if (track.album.images.size() > 0) {
+                    albumImgUrl = track.album.images.get(0).url;
+                }
+                resultsTracks[i] = new CustomTrack(track.name, track.album.name, albumImgUrl);
             }
 
             return resultsTracks;
         }
 
         @Override
-        protected void onPostExecute(Track[] result) {
+        protected void onPostExecute(CustomTrack[] result) {
             if (result != null) {
                 mTracksAdapter.clear();
-                for (Track trackData : result) {
+                for (CustomTrack trackData : result) {
                     mTracksAdapter.add(trackData);
                 }
             }

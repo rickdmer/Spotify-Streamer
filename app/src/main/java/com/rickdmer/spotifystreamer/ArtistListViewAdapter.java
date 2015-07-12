@@ -13,17 +13,15 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import kaaes.spotify.webapi.android.models.Artist;
-
 /**
  * Created by richard.carhart on 7/6/2015.
  */
 // Using http://theopentutorials.com/tutorials/android/listview/android-custom-listview-with-image-and-text-using-arrayadapter/
-public class ArtistListViewAdapter extends ArrayAdapter<Artist> {
+public class ArtistListViewAdapter extends ArrayAdapter<CustomArtist> {
 
     Context context;
 
-    public ArtistListViewAdapter(Context context, int resourceId, List<Artist> artists) {
+    public ArtistListViewAdapter(Context context, int resourceId, List<CustomArtist> artists) {
         super(context, resourceId, artists);
         this.context = context;
     }
@@ -35,7 +33,7 @@ public class ArtistListViewAdapter extends ArrayAdapter<Artist> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
-        Artist artist = getItem(position);
+        CustomArtist artist = getItem(position);
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
         // reuse view if already exists
@@ -49,11 +47,9 @@ public class ArtistListViewAdapter extends ArrayAdapter<Artist> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.artistName.setText(artist.name);
-        if (artist.images.size() > 1) {
-            Picasso.with(context).load(artist.images.get(1).url).into(holder.imageView);
-        } else if (artist.images.size() > 0) {
-            Picasso.with(context).load(artist.images.get(0).url).into(holder.imageView);
+        holder.artistName.setText(artist.artistName);
+        if (artist.artistImageUrl != null) {
+            Picasso.with(context).load(artist.artistImageUrl).into(holder.imageView);
         }
 
         return convertView;
