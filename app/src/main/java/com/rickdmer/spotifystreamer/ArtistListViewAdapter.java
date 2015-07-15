@@ -2,6 +2,7 @@ package com.rickdmer.spotifystreamer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,7 @@ public class ArtistListViewAdapter extends ArrayAdapter<CustomArtist> {
         }
 
         holder.artistName.setText(artist.artistName);
-        if (artist.artistImageUrl != null) {
+        if (artist.artistImageUrl != null && Patterns.WEB_URL.matcher(artist.artistImageUrl).matches()) {
             Picasso.with(context).load(artist.artistImageUrl).into(holder.imageView);
         }
 
