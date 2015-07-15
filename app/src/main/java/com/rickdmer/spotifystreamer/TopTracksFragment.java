@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,9 +38,6 @@ public class TopTracksFragment extends Fragment {
         } else {
             trackList = new ArrayList<CustomTrack>();
         }
-    }
-
-    public TopTracksFragment() {
     }
 
     @Override
@@ -88,18 +86,40 @@ public class TopTracksFragment extends Fragment {
 
             String artistId = params[0];
 
-            Tracks tracksResults = spotify.getArtistTopTrack(artistId, options);
-            List<Track> tracks = tracksResults.tracks;
+            CustomTrack[] resultsTracks;
 
-            CustomTrack[] resultsTracks = new CustomTrack[tracks.size()];
+            if (Utils.isNetworkAvailable(getActivity())) {
+                try {
+                    Tracks tracksResults = spotify.getArtistTopTrack(artistId, options);
+                    List<Track> tracks = tracksResults.tracks;
 
-            for (int i = 0; i < tracks.size(); i++) {
-                Track track = tracks.get(i);
-                String albumImgUrl = null;
-                if (track.album.images.size() > 0) {
-                    albumImgUrl = track.album.images.get(0).url;
+                    resultsTracks = new CustomTrack[tracks.size()];
+
+                    for (int i = 0; i < tracks.size(); i++) {
+                        Track track = tracks.get(i);
+                        String albumImgUrl = null;
+                        if (track.album.images.size() > 0) {
+                            albumImgUrl = track.album.images.get(0).url;
+                        }
+                        resultsTracks[i] = new CustomTrack(track.name, track.album.name, albumImgUrl);
+                    }
+                } catch (Error error) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), getActivity().getString(R.string.api_error), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    resultsTracks = null;
                 }
-                resultsTracks[i] = new CustomTrack(track.name, track.album.name, albumImgUrl);
+            } else {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), getActivity().getString(R.string.no_network_available), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                resultsTracks = null;
             }
 
             return resultsTracks;

@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Spotify Streamer</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
     <string name="title_activity_top_tracks">Top 10 Tracks</string>
+    <string name="invalid_image_url">Invalid image url</string>
+    <string name="no_results_for_artist">Could not find results for artist, please refine search.</string>
+    <string name="no_network_available">No network connection is available.</string>
+    <string name="api_error">There was an error with the Spotify API.</string>
 </resources>

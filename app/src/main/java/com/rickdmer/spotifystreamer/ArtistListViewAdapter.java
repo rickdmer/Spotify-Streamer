@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -49,8 +50,12 @@ public class ArtistListViewAdapter extends ArrayAdapter<CustomArtist> {
         }
 
         holder.artistName.setText(artist.artistName);
-        if (artist.artistImageUrl != null && Patterns.WEB_URL.matcher(artist.artistImageUrl).matches()) {
-            Picasso.with(context).load(artist.artistImageUrl).into(holder.imageView);
+        if (artist.artistImageUrl != null) {
+            if (Patterns.WEB_URL.matcher(artist.artistImageUrl).matches()) {
+                Picasso.with(context).load(artist.artistImageUrl).into(holder.imageView);
+            } else {
+                Toast.makeText(context, R.string.invalid_image_url, Toast.LENGTH_SHORT).show();
+            }
         }
 
         return convertView;

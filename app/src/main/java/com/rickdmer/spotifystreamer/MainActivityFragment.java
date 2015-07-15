@@ -43,9 +43,6 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
-    public MainActivityFragment() {
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList("artists", artistList);
@@ -103,19 +100,45 @@ public class MainActivityFragment extends Fragment {
             SpotifyApi api = new SpotifyApi();
             SpotifyService spotify = api.getService();
 
-            ArtistsPager artistsResults = spotify.searchArtists(params[0]);
+            CustomArtist[] resultsArtists;
 
-            List<Artist> artists = artistsResults.artists.items;
+            if (Utils.isNetworkAvailable(getActivity())) {
+                try {
+                    ArtistsPager artistsResults = spotify.searchArtists(params[0]);
 
-            CustomArtist[] resultsArtists = new CustomArtist[artists.size()];
+                    List<Artist> artists = artistsResults.artists.items;
 
-            for (int i = 0; i < artists.size(); i++) {
-                Artist artist = artists.get(i);
-                String imageUrl = null;
-                if (artist.images.size() > 0) {
-                    imageUrl = artist.images.get(0).url;
+                    resultsArtists = new CustomArtist[artists.size()];
+
+                    for (int i = 0; i < artists.size(); i++) {
+                        Artist artist = artists.get(i);
+                        String imageUrl = null;
+                        if (artist.images.size() > 0) {
+                            imageUrl = artist.images.get(0).url;
+                        }
+                        resultsArtists[i] = new CustomArtist(artist.name, artist.id, imageUrl);
+                    }
+                } catch (Error error) {
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), R.string.api_error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    resultsArtists = null;
                 }
-                resultsArtists[i] = new CustomArtist(artist.name, artist.id, imageUrl);
+            } else {
+                resultsArtists = null;
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), R.string.no_network_available, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
 
             return resultsArtists;
@@ -130,7 +153,12 @@ public class MainActivityFragment extends Fragment {
                         mArtistsAdapter.add(artistData);
                     }
                 } else {
-                    Toast.makeText(getActivity(), "Could not find results for artist, please refine search.", Toast.LENGTH_SHORT).show();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), R.string.no_results_for_artist, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     >
@@ -34,16 +35,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/list_item_track_title"
-            android:text="Yellow"
-            android:textSize="16sp">
-        </TextView>
+            tools:text="Yellow"
+            android:textSize="16sp" />
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/list_item_track_album"
-            android:text="Parachutes"
-            android:textSize="16sp">
-        </TextView>
+            tools:text="Parachutes"
+            android:textSize="16sp" />
     </LinearLayout>
 </RelativeLayout>
