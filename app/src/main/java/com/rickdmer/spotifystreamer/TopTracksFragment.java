@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -62,6 +63,19 @@ public class TopTracksFragment extends Fragment {
 
         ListView trackListView = (ListView) rootView.findViewById(R.id.listview_track);
         trackListView.setAdapter(mTracksAdapter);
+
+        trackListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CustomTrack track = mTracksAdapter.getItem(position);
+                // open track view with track
+                Intent intent = new Intent(getActivity(), TrackPlaybackActivity.class)
+                        .putExtra("artistName", "Coldplay" )
+                        .putExtra("albumName", track.albumName)
+                        .putExtra("trackName", track.trackName);
+                startActivity(intent);
+            }
+        });
 
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra("artistId")) {

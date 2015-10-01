@@ -27,6 +27,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.rickdmer.spotifystreamer.MainActivity" />
         </activity>
+        <activity
+            android:name=".TrackPlaybackActivity"
+            android:label="Track Playback"
+            android:parentActivityName=".TopTracksActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.rickdmer.spotifystreamer.TopTracksActivity" />
+        </activity>
     </application>
 
 </manifest>
