@@ -9,6 +9,9 @@ import android.support.v7.app.ActionBarActivity;
  * Created by Richard on 9/30/2015.
  */
 public class TrackPlaybackActivity extends ActionBarActivity {
+
+    public boolean isPlaying = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

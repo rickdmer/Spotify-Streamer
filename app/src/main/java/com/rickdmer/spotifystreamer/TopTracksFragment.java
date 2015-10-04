@@ -70,9 +70,12 @@ public class TopTracksFragment extends Fragment {
                 CustomTrack track = mTracksAdapter.getItem(position);
                 // open track view with track
                 Intent intent = new Intent(getActivity(), TrackPlaybackActivity.class)
-                        .putExtra("artistName", "Coldplay" )
+                        .putExtra("artistName", track.artistName )
                         .putExtra("albumName", track.albumName)
-                        .putExtra("trackName", track.trackName);
+                        .putExtra("trackName", track.trackName)
+                        .putExtra("albumImageUrl", track.albumImageUrl)
+                        .putExtra("trackLength", track.trackLength)
+                        .putExtra("trackPreviewUrl", track.trackPreviewUrl);
                 startActivity(intent);
             }
         });
@@ -115,7 +118,15 @@ public class TopTracksFragment extends Fragment {
                         if (track.album.images.size() > 0) {
                             albumImgUrl = track.album.images.get(0).url;
                         }
-                        resultsTracks[i] = new CustomTrack(track.name, track.album.name, albumImgUrl);
+
+                        String artistName = track.artists.get(0).name;
+                        for (int j = 1; j < track.artists.size(); j++) {
+                            artistName += ", " + track.artists.get(j).name;
+                        }
+
+                        long trackLength = track.duration_ms;
+
+                        resultsTracks[i] = new CustomTrack(track.name, track.album.name, albumImgUrl, artistName, trackLength, track.preview_url);
                     }
                 } catch (Error error) {
                     getActivity().runOnUiThread(new Runnable() {
