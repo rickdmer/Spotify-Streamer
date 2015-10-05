@@ -67,15 +67,18 @@ public class TopTracksFragment extends Fragment {
         trackListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                TopTracksActivity topTracksActivity = (TopTracksActivity) getActivity();
+                if (topTracksActivity.isServiceBound()) {
+                    topTracksActivity.getMediaPlayerService().setTrackList(trackList);
+                    topTracksActivity.getMediaPlayerService().setTrackPosition(position);
+                    topTracksActivity.getMediaPlayerService().playTrack();
+                }
+
                 CustomTrack track = mTracksAdapter.getItem(position);
                 // open track view with track
                 Intent intent = new Intent(getActivity(), TrackPlaybackActivity.class)
-                        .putExtra("artistName", track.artistName )
-                        .putExtra("albumName", track.albumName)
-                        .putExtra("trackName", track.trackName)
-                        .putExtra("albumImageUrl", track.albumImageUrl)
-                        .putExtra("trackLength", track.trackLength)
-                        .putExtra("trackPreviewUrl", track.trackPreviewUrl);
+                        .putExtra("artistName", track.artistName);
                 startActivity(intent);
             }
         });

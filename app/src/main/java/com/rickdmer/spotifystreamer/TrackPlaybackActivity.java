@@ -1,7 +1,10 @@
 package com.rickdmer.spotifystreamer;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 
@@ -9,8 +12,6 @@ import android.support.v7.app.ActionBarActivity;
  * Created by Richard on 9/30/2015.
  */
 public class TrackPlaybackActivity extends ActionBarActivity {
-
-    public boolean isPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,4 +25,5 @@ public class TrackPlaybackActivity extends ActionBarActivity {
             actionBar.setSubtitle(artistName);
         }
     }
+
 }

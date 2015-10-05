@@ -71,7 +71,7 @@
         android:gravity="center_horizontal">
 
         <ImageButton
-            android:id="@+id/previousTrack"
+            android:id="@+id/imageButtonPrev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_media_previous" />
@@ -80,10 +80,10 @@
             android:id="@+id/imageButtonPlayPause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_media_play" />
+            android:src="@android:drawable/ic_media_pause" />
 
         <ImageButton
-            android:id="@+id/nextTrack"
+            android:id="@+id/imageButtonNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_media_next" />

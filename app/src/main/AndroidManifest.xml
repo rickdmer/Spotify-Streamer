@@ -35,6 +35,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.rickdmer.spotifystreamer.TopTracksActivity" />
         </activity>
+        <service android:name="com.rickdmer.spotifystreamer.MediaPlayerService"></service>
     </application>
 
 </manifest>
