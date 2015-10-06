@@ -96,6 +96,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         playTrack();
     }
 
+    public void stop() {
+        mediaPlayer.stop();
+    }
+
     public void seekTo(int position) {
         mediaPlayer.seekTo(position);
     }

@@ -173,6 +173,7 @@ public class TrackPlaybackFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        mediaPlayerService.stop();
         if (seekbarHandler != null) {
             seekbarHandler.removeCallbacks(seekbarRunnable);
         }
