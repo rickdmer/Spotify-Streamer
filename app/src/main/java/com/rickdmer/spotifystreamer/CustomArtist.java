@@ -37,7 +37,7 @@ public class CustomArtist implements Parcelable {
         dest.writeString(artistImageUrl);
     }
 
-    public final Parcelable.Creator<CustomArtist> CREATOR = new Parcelable.Creator<CustomArtist>() {
+    public static Parcelable.Creator<CustomArtist> CREATOR = new Parcelable.Creator<CustomArtist>() {
 
         @Override
         public CustomArtist createFromParcel(Parcel source) {

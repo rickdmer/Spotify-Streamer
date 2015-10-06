@@ -12,7 +12,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +23,8 @@
         <activity
             android:name=".TopTracksActivity"
             android:label="@string/title_activity_top_tracks"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.rickdmer.spotifystreamer.MainActivity" />
@@ -30,7 +32,8 @@
         <activity
             android:name=".TrackPlaybackActivity"
             android:label="Track Playback"
-            android:parentActivityName=".TopTracksActivity">
+            android:parentActivityName=".TopTracksActivity"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.rickdmer.spotifystreamer.TopTracksActivity" />

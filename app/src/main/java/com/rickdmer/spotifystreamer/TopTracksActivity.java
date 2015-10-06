@@ -31,10 +31,10 @@ public class TopTracksActivity extends ActionBarActivity {
     protected void onStart() {
         super.onStart();
         Intent serviceIntent = new Intent(this, MediaPlayerService.class);
-        bindService(serviceIntent, connection, BIND_AUTO_CREATE);
+        bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE);
     }
 
-    ServiceConnection connection = new ServiceConnection() {
+    ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             isServiceBound = true;
@@ -55,5 +55,11 @@ public class TopTracksActivity extends ActionBarActivity {
 
     public boolean isServiceBound() {
         return isServiceBound;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        unbindService(serviceConnection);
     }
 }

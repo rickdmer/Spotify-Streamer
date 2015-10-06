@@ -1,12 +1,10 @@
 package com.rickdmer.spotifystreamer;
 
-import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -22,14 +20,10 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
  * Created by Richard on 9/30/2015.
  */
-public class TrackPlaybackFragment extends DialogFragment {
+public class TrackPlaybackFragment extends Fragment {
 
     //MediaPlayer mediaPlayer = new MediaPlayer();
 
@@ -116,7 +110,7 @@ public class TrackPlaybackFragment extends DialogFragment {
 
         seekbarHandler = new Handler();
         if (getActivity() != null) {
-            getActivity().runOnUiThread(seekBarRunnable);
+            getActivity().runOnUiThread(seekbarRunnable);
         }
 
         return rootView;
@@ -148,7 +142,7 @@ public class TrackPlaybackFragment extends DialogFragment {
 
     }
 
-    Runnable seekBarRunnable = new Runnable() {
+    Runnable seekbarRunnable = new Runnable() {
 
         @Override
         public void run() {
@@ -175,4 +169,19 @@ public class TrackPlaybackFragment extends DialogFragment {
             isServiceBound = false;
         }
     };
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (seekbarHandler != null) {
+            seekbarHandler.removeCallbacks(seekbarRunnable);
+        }
+        seekbarHandler = null;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getActivity().unbindService(serviceConnection);
+    }
 }
