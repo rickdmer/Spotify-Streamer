@@ -18,6 +18,11 @@ public class TrackPlaybackActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
+        if (savedInstanceState == null) {
+            TrackPlaybackFragment fragment = TrackPlaybackFragment.newInstance(false);
+            getSupportFragmentManager().beginTransaction().add(R.id.activity_player, fragment, "tag").commit();
+        }
+
         Intent intent = this.getIntent();
         if (intent != null && intent.hasExtra("artistName")) {
             ActionBar actionBar = getSupportActionBar();

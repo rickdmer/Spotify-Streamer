@@ -76,10 +76,17 @@ public class TopTracksFragment extends Fragment {
                 }
 
                 CustomTrack track = mTracksAdapter.getItem(position);
-                // open track view with track
-                Intent intent = new Intent(getActivity(), TrackPlaybackActivity.class)
-                        .putExtra("artistName", track.artistName);
-                startActivity(intent);
+                String device = getString(R.string.device);
+
+                if ("large".equalsIgnoreCase(device)) {
+                    TrackPlaybackFragment fragment = TrackPlaybackFragment.newInstance();
+                    fragment.show(getActivity().getSupportFragmentManager(), "Tablet_specific");
+                } else {
+                    // open track view with track
+                    Intent intent = new Intent(getActivity(), TrackPlaybackActivity.class)
+                            .putExtra("artistName", track.artistName);
+                    startActivity(intent);
+                }
             }
         });
 

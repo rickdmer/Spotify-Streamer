@@ -1,5 +1,6 @@
 package com.rickdmer.spotifystreamer;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.DialogFragment;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +25,9 @@ import com.squareup.picasso.Picasso;
 /**
  * Created by Richard on 9/30/2015.
  */
-public class TrackPlaybackFragment extends Fragment {
+public class TrackPlaybackFragment extends DialogFragment {
 
-    //MediaPlayer mediaPlayer = new MediaPlayer();
+    private static final String ARG_SHOW_AS_DIALOG = "TrackPlaybackFragment.ARG_SHOW_AS_DIALOG";
 
     MediaPlayerService mediaPlayerService;
     boolean isServiceBound = false;
@@ -42,6 +44,27 @@ public class TrackPlaybackFragment extends Fragment {
     SeekBar seekBar;
     View rootView;
     Handler seekbarHandler;
+
+    public static TrackPlaybackFragment newInstance(boolean showAsDialog) {
+        TrackPlaybackFragment fragment = new TrackPlaybackFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_SHOW_AS_DIALOG, showAsDialog);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static TrackPlaybackFragment newInstance() {
+        return newInstance(true);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            setShowsDialog(args.getBoolean(ARG_SHOW_AS_DIALOG, true));
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

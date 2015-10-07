@@ -5,4 +5,5 @@
     <string name="no_results_for_artist">Could not find results for artist, please refine search.</string>
     <string name="no_network_available">No network connection is available.</string>
     <string name="api_error">There was an error with the Spotify API.</string>
+    <string name="device">normal</string>
 </resources>
