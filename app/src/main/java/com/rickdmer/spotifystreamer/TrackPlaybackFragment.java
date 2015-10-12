@@ -1,7 +1,6 @@
 package com.rickdmer.spotifystreamer;
 
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +13,7 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -27,7 +27,7 @@ import com.squareup.picasso.Picasso;
  */
 public class TrackPlaybackFragment extends DialogFragment {
 
-    private static final String ARG_SHOW_AS_DIALOG = "TrackPlaybackFragment.ARG_SHOW_AS_DIALOG";
+    private static final String ARGSHOWAS_DIALOG = "TrackPlaybackFragment.ARGSHOWAS_DIALOG";
 
     MediaPlayerService mediaPlayerService;
     boolean isServiceBound = false;
@@ -45,24 +45,12 @@ public class TrackPlaybackFragment extends DialogFragment {
     View rootView;
     Handler seekbarHandler;
 
-    public static TrackPlaybackFragment newInstance(boolean showAsDialog) {
-        TrackPlaybackFragment fragment = new TrackPlaybackFragment();
-        Bundle args = new Bundle();
-        args.putBoolean(ARG_SHOW_AS_DIALOG, showAsDialog);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static TrackPlaybackFragment newInstance() {
-        return newInstance(true);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-            setShowsDialog(args.getBoolean(ARG_SHOW_AS_DIALOG, true));
+            setShowsDialog(args.getBoolean(ARGSHOWAS_DIALOG, true));
         }
     }
 
@@ -140,11 +128,21 @@ public class TrackPlaybackFragment extends DialogFragment {
     }
 
     @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // from http://stackoverflow.com/a/15279400/1819249
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+
+        // request a window without the title
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         Intent serviceIntent = new Intent(getActivity(), MediaPlayerService.class);
-        getActivity().startService(serviceIntent);
         getActivity().bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+        getActivity().startService(serviceIntent);
     }
 
     private void loadCurrentTrack() {
@@ -196,7 +194,6 @@ public class TrackPlaybackFragment extends DialogFragment {
     @Override
     public void onPause() {
         super.onPause();
-        mediaPlayerService.stop();
         if (seekbarHandler != null) {
             seekbarHandler.removeCallbacks(seekbarRunnable);
         }

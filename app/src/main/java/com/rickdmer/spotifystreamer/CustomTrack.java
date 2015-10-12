@@ -14,6 +14,7 @@ public class CustomTrack implements Parcelable {
     String artistName;
     Long trackLength;
     String trackPreviewUrl;
+    int trackPosition;
 
     public CustomTrack (String _trackName, String _albumName, String _albumImageUrl, String _artistName, Long _trackLength, String _trackPreviewUrl) {
         trackName = _trackName;

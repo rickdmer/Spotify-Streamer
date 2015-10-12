@@ -19,6 +19,20 @@ public class TopTracksActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_top_tracks);
 
+        if (savedInstanceState == null) {
+
+            Bundle args = new Bundle();
+            args.putParcelable(TopTracksFragment.TRACKARTISTITEM_KEY,
+                    getIntent().getParcelableExtra(TopTracksFragment.TRACKARTISTITEM_KEY));
+
+            TopTracksFragment topTracksFragment = new TopTracksFragment();
+            topTracksFragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.top_tracks_container, topTracksFragment)
+                    .commit();
+        }
+
         Intent intent = this.getIntent();
         if (intent != null && intent.hasExtra("artistName")) {
             ActionBar actionBar = getSupportActionBar();

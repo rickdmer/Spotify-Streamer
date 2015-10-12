@@ -3,23 +3,23 @@
     android:id="@+id/main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:baselineAligned="false"
-    android:divider="?android:attr/dividerHorizontal"
+    android:divider="?android:dividerVertical"
     android:orientation="horizontal"
-    tools:context="com.rickdmer.spotifystreamer.MainActivity">
+    tools:context="com.rickdmer.spotifystreamer.MainActivity"
+    android:showDividers="middle">
 
     <fragment
-        android:id="@+id/fragment_main"
-        android:name="com.rickdmer.spotifystreamer.MainActivityFragment"
+        android:id="@+id/main_fragment"
+        android:name="com.rickdmer.spotifystreamer.MainFragment"
         tools:layout="@layout/fragment_search"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1" />
 
     <FrameLayout
-        android:id="@+id/fragment_top_tracks"
+        android:id="@+id/top_tracks_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="2"/>
 
 </LinearLayout>

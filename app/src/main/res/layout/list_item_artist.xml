@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="80dp"
+    android:background="@drawable/touch_selector">
+
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,13 +13,14 @@
         android:layout_alignTop="@+id/list_item_artist_imageview"
         android:layout_alignBottom="@+id/list_item_artist_imageview"
         android:text="Test"
-        android:paddingLeft="8dp"
-        android:textSize="16sp"
+        android:paddingLeft="15dp"
+        android:textSize="20sp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_toRightOf="@+id/list_item_artist_imageview"
         android:layout_toEndOf="@+id/list_item_artist_imageview"
-        android:layout_marginRight="8dp">
+        android:layout_marginRight="8dp"
+        android:textStyle="bold">
     </TextView>
 
     <ImageView
@@ -35,4 +37,5 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp" />
+
 </RelativeLayout>
